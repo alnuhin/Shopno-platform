@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head><%- include('../partials/head', { title: t('donor_investor_user') + ' ' + t('signup') }) %></head>
+<body>
+  <%- include('../partials/topbar') %>
+  <div class="container-narrow" style="padding-top:40px; padding-bottom:60px;">
+    <div class="card">
+      <h1><%= t('donor_investor_user') %> — <%= t('signup') %></h1>
+      <%- include('../partials/flash') %>
+
+      <form action="/signup/donor" method="POST" enctype="multipart/form-data">
+
+        <div class="form-section-title">🔐 <%= t('username') %> / <%= t('password') %></div>
+        <div class="form-row">
+          <div class="field"><label><%= t('username') %> *</label><input type="text" name="username" required /></div>
+          <div class="field"><label><%= t('password') %> *</label><input type="password" name="password" required minlength="6" /></div>
+        </div>
+
+        <div class="form-section-title">👤 <%= t('personal_info') %></div>
+        <div class="form-row">
+          <div class="field">
+            <label><%= lang==='en' ? 'Account name (shown publicly)' : 'অ্যাকাউন্ট নাম (সবার কাছে দেখানো হবে)' %> *</label>
+            <input type="text" name="account_name" required />
+          </div>
+          <div class="field">
+            <label><%= lang==='en' ? 'Legal / ID name' : 'আইডি অনুযায়ী নাম' %> *</label>
+            <input type="text" name="full_name" required />
+          </div>
+        </div>
+        <div class="field">
+          <label><%= lang==='en' ? 'I am joining as' : 'আমি যুক্ত হচ্ছি একজন' %></label>
+          <div class="radio-group">
+            <label><input type="radio" name="donor_type" value="donor" checked /> <%= lang==='en' ? 'Donor' : 'ডোনার' %></label>
+            <label><input type="radio" name="donor_type" value="investor" /> <%= lang==='en' ? 'Investor' : 'ইনভেস্টর' %></label>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label><%= t('phone_number') %></label><input type="tel" name="phone" /></div>
+          <div class="field"><label><%= lang==='en' ? 'Email' : 'ইমেইল' %></label><input type="email" name="email" /></div>
+        </div>
+        <div class="field"><label><%= t('upload_photo') %> (<%= lang==='en' ? 'profile' : 'প্রোফাইল' %>)</label><input type="file" name="profile_photo" accept="image/*" /></div>
+
+        <div class="form-section-title">🪪 <%= lang==='en' ? 'Identity (optional but recommended)' : 'পরিচয় (দিলে ভালো, বাধ্যতামূলক নয়)' %></div>
+        <div class="form-row">
+          <div class="field"><label><%= lang==='en' ? 'ID type' : 'আইডির ধরন' %></label>
+            <select name="id_type">
+              <option value="NID"><%= lang==='en' ? 'National ID' : 'জাতীয় পরিচয়পত্র' %></option>
+              <option value="Passport"><%= lang==='en' ? 'Passport' : 'পাসপোর্ট' %></option>
+              <option value="Other"><%= lang==='en' ? 'Other' : 'অন্যান্য' %></option>
+            </select>
+          </div>
+          <div class="field"><label><%= t('nid_number') %></label><input type="text" name="id_number" /></div>
+        </div>
+        <div class="field"><label><%= t('upload_photo') %> (<%= lang==='en' ? 'ID document' : 'আইডি ডকুমেন্ট' %>)</label><input type="file" name="id_photo" accept="image/*" /></div>
+        <p class="hint"><%= lang==='en' ? 'Verified donors get a badge — Management reviews this after signup.' : 'ভেরিফাইড ডোনাররা একটি ব্যাজ পাবেন — সাইনআপের পর ম্যানেজমেন্ট এটি রিভিউ করবে।' %></p>
+
+        <div class="checkbox-row">
+          <input type="checkbox" name="agree_terms" id="agree_terms" required />
+          <label for="agree_terms"><%= t('agree_terms') %></label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block"><%= t('submit') %></button>
+      </form>
+    </div>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>

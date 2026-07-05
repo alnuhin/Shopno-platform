@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head><%- include('../partials/head', { title: t('signup') }) %></head>
+<body>
+  <%- include('../partials/topbar') %>
+  <div class="container" style="padding-top:50px; padding-bottom:60px;">
+    <h1 style="text-align:center;"><%= t('choose_role') %></h1>
+    <div class="role-grid">
+      <div class="role-card">
+        <span class="icon">🎓</span>
+        <h3><%= t('student_user') %></h3>
+        <a href="/signup/student" class="btn btn-primary btn-block"><%= t('signup') %></a>
+      </div>
+      <div class="role-card">
+        <span class="icon">🧑‍🏫</span>
+        <h3><%= t('teacher_mentor_user') %></h3>
+        <a href="/signup/teacher" class="btn btn-primary btn-block"><%= t('signup') %></a>
+      </div>
+      <div class="role-card">
+        <span class="icon">💛</span>
+        <h3><%= t('donor_investor_user') %></h3>
+        <a href="/signup/donor" class="btn btn-primary btn-block"><%= t('signup') %></a>
+      </div>
+    </div>
+    <p style="text-align:center; color:var(--ink-soft)">
+      <%= lang === 'en' ? 'Already have an account?' : 'আগে থেকেই অ্যাকাউন্ট আছে?' %>
+      <a href="/login"><%= t('login') %></a>
+    </p>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>

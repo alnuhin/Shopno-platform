@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head><%- include('partials/head', { title: title }) %></head>
+<body>
+  <%- include('partials/topbar') %>
+  <div class="container-narrow" style="padding-top:80px; text-align:center;">
+    <h1><%= title %></h1>
+    <p style="color:var(--ink-soft)"><%= message %></p>
+    <a href="/" class="btn btn-primary"><%= t('home') %></a>
+  </div>
+  <%- include('partials/footer') %>
+</body>
+</html>

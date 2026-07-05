@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head><%- include('../partials/head', { title: t('teacher_mentor_user') + ' ' + t('signup') }) %></head>
+<body>
+  <%- include('../partials/topbar') %>
+  <div class="container-narrow" style="padding-top:40px; padding-bottom:60px;">
+    <div class="card">
+      <h1><%= t('teacher_mentor_user') %> — <%= t('signup') %></h1>
+      <%- include('../partials/flash') %>
+
+      <form action="/signup/teacher" method="POST" enctype="multipart/form-data">
+
+        <div class="form-section-title">🔐 <%= t('username') %> / <%= t('password') %></div>
+        <div class="form-row">
+          <div class="field"><label><%= t('username') %> *</label><input type="text" name="username" required /></div>
+          <div class="field"><label><%= t('password') %> *</label><input type="password" name="password" required minlength="6" /></div>
+        </div>
+
+        <div class="form-section-title">👤 <%= t('personal_info') %></div>
+        <div class="form-row">
+          <div class="field"><label><%= lang==='en' ? 'Full name' : 'পূর্ণ নাম' %> *</label><input type="text" name="full_name" required /></div>
+          <div class="field">
+            <label><%= lang==='en' ? 'I am a...' : 'আমি একজন...' %></label>
+            <div class="radio-group">
+              <label><input type="radio" name="is_teacher_or_mentor" value="teacher" checked /> <%= lang==='en' ? 'Teacher' : 'শিক্ষক' %></label>
+              <label><input type="radio" name="is_teacher_or_mentor" value="mentor" /> <%= lang==='en' ? 'Mentor' : 'মেন্টর' %></label>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label><%= t('phone_number') %> *</label><input type="tel" name="phone" required /></div>
+          <div class="field"><label><%= lang==='en' ? 'Email' : 'ইমেইল' %> *</label><input type="email" name="email" required /></div>
+        </div>
+        <div class="field"><label><%= t('upload_photo') %></label><input type="file" name="teacher_photo" accept="image/*" /></div>
+
+        <div class="form-section-title">🏫 <%= t('educational_info') %></div>
+        <div class="form-row">
+          <div class="field"><label><%= lang==='en' ? 'Working place' : 'কর্মস্থল' %></label><input type="text" name="working_place" /></div>
+          <div class="field">
+            <label><%= lang==='en' ? 'Affiliated with an institution?' : 'কোনো প্রতিষ্ঠানের সাথে যুক্ত?' %></label>
+            <div class="radio-group">
+              <label><input type="radio" name="affiliated_with_institution" value="yes" /> <%= t('yes') %></label>
+              <label><input type="radio" name="affiliated_with_institution" value="no" checked /> <%= t('no') %></label>
+            </div>
+          </div>
+        </div>
+        <div class="field"><label><%= t('which_club') %> (<%= lang==='en' ? 'if applicable' : 'যদি থাকে' %>)</label><input type="text" name="club_name" /></div>
+
+        <div class="form-row">
+          <div class="field"><label><%= lang==='en' ? 'Graduated from' : 'যে ইউনিভার্সিটি থেকে গ্র্যাজুয়েট' %></label><input type="text" name="graduated_from" /></div>
+          <div class="field"><label><%= lang==='en' ? 'Graduate year' : 'গ্র্যাজুয়েট সাল' %></label><input type="text" name="graduation_year" /></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label><%= lang==='en' ? 'Graduate subject' : 'বিষয়' %></label><input type="text" name="graduate_subject" /></div>
+          <div class="field"><label>CGPA</label><input type="text" name="cgpa" /></div>
+        </div>
+        <div class="field"><label><%= lang==='en' ? 'Publications (if any)' : 'প্রকাশিত পেপার (যদি থাকে)' %></label><textarea name="publications"></textarea></div>
+        <div class="field"><label><%= lang==='en' ? 'About yourself — why are you interested here?' : 'নিজের সম্পর্কে — কেন যুক্ত হতে চাও?' %></label><textarea name="about_self"></textarea></div>
+
+        <div class="form-section-title">🪪 <%= lang==='en' ? 'Identity Verification' : 'পরিচয় যাচাই' %></div>
+        <div class="field"><label><%= t('nid_number') %></label><input type="text" name="nid_number" /></div>
+        <div class="upload-grid">
+          <div class="field"><label>NID (<%= lang==='en' ? 'front' : 'সামনে' %>)</label><input type="file" name="nid_front" accept="image/*" /></div>
+          <div class="field"><label>NID (<%= lang==='en' ? 'back' : 'পেছনে' %>)</label><input type="file" name="nid_back" accept="image/*" /></div>
+          <div class="field"><label><%= lang==='en' ? 'Institution ID (front)' : 'প্রতিষ্ঠানের আইডি (সামনে)' %></label><input type="file" name="id_card_front" accept="image/*" /></div>
+          <div class="field"><label><%= lang==='en' ? 'Institution ID (back)' : 'প্রতিষ্ঠানের আইডি (পেছনে)' %></label><input type="file" name="id_card_back" accept="image/*" /></div>
+        </div>
+        <p class="hint"><%= lang==='en' ? 'Management will review your NID/ID documents before your account can approve student projects.' : 'তোমার একাউন্ট প্রজেক্ট অনুমোদনের ক্ষমতা পাওয়ার আগে ম্যানেজমেন্ট তোমার NID/ID যাচাই করবে।' %></p>
+
+        <div class="checkbox-row">
+          <input type="checkbox" name="agree_terms" id="agree_terms" required />
+          <label for="agree_terms"><%= t('agree_terms') %></label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block"><%= t('submit') %></button>
+      </form>
+    </div>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>

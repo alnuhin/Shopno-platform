@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head><%- include('../partials/head', { title: t('dashboard') }) %></head>
+<body>
+  <%- include('../partials/topbar') %>
+  <div class="container">
+    <div class="page-head">
+      <div class="split-header">
+        <div>
+          <div class="eyebrow"><%= t('student_user') %></div>
+          <h1><%= profile.first_name %> <%= profile.last_name %></h1>
+        </div>
+        <div>
+          <% if (profile.verification_status === 'confirmed') { %>
+            <span class="pill-status pill-confirmed">✓ <%= t('approved') %> — <%= lang==='en' ? 'teacher confirmed' : 'শিক্ষক নিশ্চিত করেছেন' %></span>
+          <% } else if (profile.verification_status === 'rejected') { %>
+            <span class="pill-status pill-rejected"><%= t('rejected') %></span>
+          <% } else { %>
+            <span class="pill-status pill-pending"><%= t('pending') %></span>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <%- include('../partials/flash') %>
+
+    <% if (profile.verification_status !== 'confirmed') { %>
+      <div class="card" style="background:#fff8e6; border-color:var(--gold-500);">
+        <strong>⏳ <%= t('please_wait_teacher') %></strong>
+        <p style="margin-top:8px; color:var(--ink-soft);">
+          <%= lang==='en' ? 'Teacher/mentor contact you provided:' : 'তুমি যে টিচার/মেন্টরের তথ্য দিয়েছিলে:' %> <b><%= profile.teacher_contact %></b>
+        </p>
+      </div>
+    <% } %>
+
+    <div class="split-header" style="margin-bottom:16px;">
+      <h2><%= t('my_projects') %></h2>
+      <% if (profile.verification_status === 'confirmed') { %>
+        <a href="/student/projects/new" class="btn btn-gold"><%= t('new_project') %></a>
+      <% } %>
+    </div>
+
+    <% if (projects.length === 0) { %>
+      <div class="card"><%= lang==='en' ? 'You have not submitted any project yet.' : 'তুমি এখনো কোনো প্রজেক্ট জমা দাওনি।' %></div>
+    <% } %>
+
+    <% projects.forEach(function(p) { %>
+      <div class="card">
+        <div class="split-header">
+          <div>
+            <h3 style="margin-bottom:4px;"><%= p.title %></h3>
+            <p style="color:var(--ink-soft); margin-bottom:4px;"><%= p.description %></p>
+          </div>
+          <span class="pill-status pill-<%= p.status %>"><%= t(p.status) %></span>
+        </div>
+        <% if (p.media_path) { %>
+          <div class="project-media" style="max-width:320px;">
+            <% if (p.media_type === 'video') { %>
+              <video src="<%= p.media_path %>" controls></video>
+            <% } else { %>
+              <img src="<%= p.media_path %>" alt="<%= p.title %>" />
+            <% } %>
+          </div>
+        <% } %>
+        <% if (p.teacher_note) { %>
+          <p style="margin-top:10px;"><b><%= lang==='en' ? "Teacher's note:" : 'শিক্ষকের মন্তব্য:' %></b> <%= p.teacher_note %></p>
+        <% } %>
+        <a href="/student/projects/<%= p.id %>" class="btn btn-sm btn-outline" style="margin-top:8px;"><%= t('view') %></a>
+      </div>
+    <% }) %>
+
+    <% if (achievements.length) { %>
+      <h2 style="margin-top:36px;">🏆 <%= lang==='en' ? 'Achievements' : 'অ্যাচিভমেন্ট' %></h2>
+      <div class="card">
+        <table>
+          <thead><tr><th><%= lang==='en' ? 'Category' : 'ক্যাটাগরি' %></th><th>Points</th><th><%= lang==='en' ? 'Note' : 'মন্তব্য' %></th></tr></thead>
+          <tbody>
+          <% achievements.forEach(function(a) { %>
+            <tr><td><%= a.category %></td><td><%= a.points %></td><td><%= a.note || '—' %></td></tr>
+          <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head><%- include('../partials/head', { title: t('welcome_future_leaders') }) %></head>
+<body>
+  <%- include('../partials/topbar') %>
+
+  <div class="hero">
+    <div class="container">
+      <div class="tagline"><%= t('welcome_future_leaders') %></div>
+      <h1><%= t('app_name') %></h1>
+      <p class="lede"><%= t('welcome_msg') %> — <%= t('tagline') %>.</p>
+      <div class="actions">
+        <a href="/signup" class="btn btn-gold"><%= t('signup') %></a>
+        <a href="/login" class="btn btn-outline" style="color:#fff; border-color:rgba(255,255,255,0.5)"><%= t('login') %></a>
+      </div>
+    </div>
+  </div>
+  <svg class="stairs-divider" viewBox="0 0 1200 60" preserveAspectRatio="none">
+    <path d="M0,60 L0,45 L150,45 L150,32 L300,32 L300,20 L450,20 L450,10 L1200,10 L1200,60 Z" fill="#f6f7f2"/>
+  </svg>
+
+  <div class="container" style="padding-bottom:60px;">
+    <h2 style="text-align:center; margin-top:10px;"><%= t('choose_role') %></h2>
+    <div class="role-grid">
+      <div class="role-card">
+        <span class="icon">🎓</span>
+        <h3><%= t('student_user') %></h3>
+        <p><%= lang === 'en' ? 'Submit your idea or project and get it reviewed by your teacher, then funded by donors.' : 'তোমার আইডিয়া বা প্রজেক্ট জমা দাও, শিক্ষক যাচাই করবেন, ডোনাররা সাপোর্ট দেবেন।' %></p>
+        <a href="/signup/student" class="btn btn-primary btn-block"><%= t('signup') %></a>
+      </div>
+      <div class="role-card">
+        <span class="icon">🧑‍🏫</span>
+        <h3><%= t('teacher_mentor_user') %></h3>
+        <p><%= lang === 'en' ? 'Confirm your students and review the projects they submit.' : 'তোমার স্টুডেন্টদের নিশ্চিত করো এবং তাদের প্রজেক্ট রিভিউ করো।' %></p>
+        <a href="/signup/teacher" class="btn btn-primary btn-block"><%= t('signup') %></a>
+      </div>
+      <div class="role-card">
+        <span class="icon">💛</span>
+        <h3><%= t('donor_investor_user') %></h3>
+        <p><%= lang === 'en' ? 'Discover verified student projects, like, comment and support them.' : 'ভেরিফাইড স্টুডেন্ট প্রজেক্ট দেখো, লাইক-কমেন্ট করো, সাপোর্ট করো।' %></p>
+        <a href="/signup/donor" class="btn btn-primary btn-block"><%= t('signup') %></a>
+      </div>
+    </div>
+  </div>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

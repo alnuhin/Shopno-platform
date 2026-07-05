@@ -1,0 +1,29 @@
+<div class="topbar">
+  <div class="container">
+    <a href="/" class="brand">
+      <svg class="brand-mark" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="30" width="8" height="8" rx="1.5" fill="#DBB453"/>
+        <rect x="12" y="22" width="8" height="16" rx="1.5" fill="#DBB453"/>
+        <rect x="22" y="14" width="8" height="24" rx="1.5" fill="#DBB453"/>
+        <rect x="32" y="4" width="6" height="34" rx="1.5" fill="#C99A2E"/>
+      </svg>
+      <span><%= t('app_name') %></span>
+    </a>
+    <nav>
+      <% if (currentUser) { %>
+        <a href="/<%= currentUser.role %>/dashboard"><%= t('dashboard') %></a>
+        <span class="pill-status pill-active"><%= currentUser.unique_number %></span>
+        <form action="/logout" method="POST" style="display:inline">
+          <button type="submit" class="btn btn-sm btn-outline" style="border-color:rgba(255,255,255,0.4); color:#fff;"><%= t('logout') %></button>
+        </form>
+      <% } else { %>
+        <a href="/login"><%= t('login') %></a>
+        <a href="/signup"><%= t('signup') %></a>
+      <% } %>
+      <form action="/set-language" method="POST" class="lang-form">
+        <button name="lang" value="bn" class="lang-btn" type="submit">বাংলা</button>
+        <button name="lang" value="en" class="lang-btn" type="submit">EN</button>
+      </form>
+    </nav>
+  </div>
+</div>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head><%- include('../partials/head', { title: t('dashboard') }) %></head>
+<body>
+  <%- include('../partials/topbar') %>
+  <div class="container">
+    <div class="page-head">
+      <div class="eyebrow"><%= t('teacher_mentor_user') %></div>
+      <h1><%= profile.full_name %></h1>
+      <% if (!profile.admin_verified) { %>
+        <span class="pill-status pill-pending">⏳ <%= lang==='en' ? 'Awaiting Management verification — you can still confirm students, but check with admin about full access.' : 'ম্যানেজমেন্ট ভেরিফিকেশনের অপেক্ষায়' %></span>
+      <% } else { %>
+        <span class="pill-status pill-active">✓ <%= lang==='en' ? 'Verified' : 'ভেরিফাইড' %></span>
+      <% } %>
+    </div>
+
+    <%- include('../partials/flash') %>
+
+    <h2><%= t('students_pending_confirmation') %> (<%= pendingStudents.length %>)</h2>
+    <% if (pendingStudents.length === 0) { %>
+      <div class="card"><%= lang==='en' ? 'No students waiting right now.' : 'এখন কোনো স্টুডেন্ট অপেক্ষা করছে না।' %></div>
+    <% } %>
+    <% pendingStudents.forEach(function(s) { %>
+      <div class="card">
+        <div class="split-header">
+          <div>
+            <h3><%= s.first_name %> <%= s.last_name %> <span style="color:var(--ink-soft); font-weight:400; font-size:0.85rem;">(<%= s.unique_number %>)</span></h3>
+            <p style="color:var(--ink-soft); margin-bottom:4px;"><%= s.institution_name || '—' %> · <%= s.class_level || '—' %></p>
+            <p style="color:var(--ink-soft); font-size:0.88rem;"><%= lang==='en' ? 'Phone' : 'ফোন' %>: <%= s.student_phone || '—' %> · <%= lang==='en' ? 'Emergency contact' : 'জরুরি যোগাযোগ' %>: <%= s.emergency_contact_name || '—' %> (<%= s.emergency_contact_phone || '—' %>)</p>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <form action="/teacher/students/<%= s.id %>/confirm" method="POST"><button class="btn btn-sm btn-primary"><%= t('confirm') %></button></form>
+            <form action="/teacher/students/<%= s.id %>/reject" method="POST"><button class="btn btn-sm btn-danger"><%= t('reject') %></button></form>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+
+    <h2 style="margin-top:36px;"><%= lang==='en' ? 'Projects awaiting review' : 'রিভিউয়ের অপেক্ষায় থাকা প্রজেক্ট' %> (<%= pendingProjects.length %>)</h2>
+    <% if (pendingProjects.length === 0) { %>
+      <div class="card"><%= lang==='en' ? 'No projects waiting for review.' : 'রিভিউয়ের অপেক্ষায় কোনো প্রজেক্ট নেই।' %></div>
+    <% } %>
+    <% pendingProjects.forEach(function(p) { %>
+      <div class="card">
+        <h3><%= p.title %> <span style="color:var(--ink-soft); font-weight:400; font-size:0.85rem;">— <%= p.first_name %> <%= p.last_name %></span></h3>
+        <p style="color:var(--ink-soft)"><%= p.description %></p>
+        <% if (p.media_path) { %>
+          <div class="project-media" style="max-width:320px;">
+            <% if (p.media_type === 'video') { %><video src="<%= p.media_path %>" controls></video>
+            <% } else { %><img src="<%= p.media_path %>" alt="" /><% } %>
+          </div>
+        <% } %>
+        <form action="/teacher/projects/<%= p.id %>/approve" method="POST" style="margin-top:12px; display:flex; gap:8px;">
+          <input type="text" name="note" placeholder="<%= lang==='en' ? 'Optional note' : 'ঐচ্ছিক মন্তব্য' %>" style="flex:1;" />
+          <button class="btn btn-primary btn-sm"><%= t('approved') %></button>
+        </form>
+        <form action="/teacher/projects/<%= p.id %>/reject" method="POST" style="margin-top:8px; display:flex; gap:8px;">
+          <input type="text" name="note" placeholder="<%= lang==='en' ? 'Reason for rejection' : 'বাতিলের কারণ' %>" style="flex:1;" />
+          <button class="btn btn-danger btn-sm"><%= t('rejected') %></button>
+        </form>
+      </div>
+    <% }) %>
+
+    <h2 style="margin-top:36px;"><%= lang==='en' ? 'Your confirmed students' : 'তোমার নিশ্চিতকৃত স্টুডেন্ট' %> (<%= confirmedStudents.length %>)</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th><%= lang==='en' ? 'Name' : 'নাম' %></th><th><%= lang==='en' ? 'Institution' : 'প্রতিষ্ঠান' %></th><th><%= lang==='en' ? 'Give achievement' : 'অ্যাচিভমেন্ট দিন' %></th></tr></thead>
+        <tbody>
+        <% confirmedStudents.forEach(function(s) { %>
+          <tr>
+            <td><%= s.first_name %> <%= s.last_name %></td>
+            <td><%= s.institution_name || '—' %></td>
+            <td>
+              <form action="/teacher/students/<%= s.id %>/achievement" method="POST" style="display:flex; gap:6px;">
+                <select name="category" style="width:auto;">
+                  <option value="leadership"><%= lang==='en' ? 'Leadership' : 'নেতৃত্ব' %></option>
+                  <option value="kindness"><%= lang==='en' ? 'Kindness' : 'দয়া' %></option>
+                  <option value="talent"><%= lang==='en' ? 'Talent' : 'প্রতিভা' %></option>
+                </select>
+                <input type="number" name="points" value="1" min="1" style="width:60px;" />
+                <button class="btn btn-sm btn-gold">+</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>

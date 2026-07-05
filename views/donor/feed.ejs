@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head><%- include('../partials/head', { title: t('community_feed') }) %></head>
+<body>
+  <%- include('../partials/topbar') %>
+  <div class="container">
+    <div class="page-head">
+      <div class="eyebrow"><%= t('donor_investor_user') %></div>
+      <h1><%= profile.account_name %></h1>
+      <% if (!profile.admin_verified) { %>
+        <span class="pill-status pill-pending">⏳ <%= lang==='en' ? 'Verification pending' : 'ভেরিফিকেশন বাকি' %></span>
+      <% } else { %>
+        <span class="pill-status pill-active">✓ <%= lang==='en' ? 'Verified' : 'ভেরিফাইড' %></span>
+      <% } %>
+    </div>
+
+    <%- include('../partials/flash') %>
+
+    <h2><%= t('community_feed') %></h2>
+    <% if (projects.length === 0) { %>
+      <div class="card"><%= lang==='en' ? 'No approved projects yet. Check back soon!' : 'এখনো কোনো অনুমোদিত প্রজেক্ট নেই। কিছু পরে দেখো!' %></div>
+    <% } %>
+
+    <% projects.forEach(function(p) { %>
+      <div class="card project-card">
+        <div class="split-header">
+          <div>
+            <h3 style="margin-bottom:2px;"><%= p.title %></h3>
+            <p style="color:var(--ink-soft); font-size:0.85rem; margin-bottom:6px;">
+              <%= p.first_name %> <%= p.last_name %> · <%= p.institution_name || '—' %>
+            </p>
+          </div>
+          <span class="pill-status pill-<%= p.status %>"><%= t(p.status) %></span>
+        </div>
+        <p><%= p.description %></p>
+
+        <% if (p.media_path) { %>
+          <div class="project-media">
+            <% if (p.media_type === 'video') { %>
+              <video src="<%= p.media_path %>" controls></video>
+            <% } else { %>
+              <img src="<%= p.media_path %>" alt="<%= p.title %>" />
+            <% } %>
+          </div>
+        <% } %>
+
+        <div class="project-actions">
+          <form action="/donor/projects/<%= p.id %>/like" method="POST">
+            <button type="submit" class="btn btn-sm btn-outline like-btn <%= p.liked_by_me ? 'liked' : '' %>">
+              <%= p.liked_by_me ? '❤️' : '🤍' %> <%= t('like') %> (<%= p.like_count %>)
+            </button>
+          </form>
+          <span style="color:var(--ink-soft); font-size:0.85rem;">💬 <%= p.comment_count %> <%= t('comment') %></span>
+          <span style="color:var(--ink-soft); font-size:0.85rem;">৳<%= p.pledged_total %> <%= lang==='en' ? 'pledged' : 'প্রতিশ্রুত' %></span>
+        </div>
+
+        <form action="/donor/projects/<%= p.id %>/comment" method="POST" style="display:flex; gap:8px; margin-top:8px;">
+          <input type="text" name="body" placeholder="<%= t('write_comment') %>" required style="flex:1;" />
+          <button type="submit" class="btn btn-sm btn-outline"><%= t('comment') %></button>
+        </form>
+
+        <form action="/donor/projects/<%= p.id %>/donate" method="POST" class="donate-form">
+          <input type="number" name="amount" min="10" placeholder="<%= t('amount') %>" required />
+          <input type="text" name="message" placeholder="<%= lang==='en' ? 'Message (optional)' : 'মেসেজ (ঐচ্ছিক)' %>" style="flex:1;" />
+          <button type="submit" class="btn btn-gold"><%= t('donate') %></button>
+        </form>
+        <p class="hint" style="margin-top:2px;">
+          <%= lang==='en'
+            ? '(Demo: this only records your pledge — no real payment gateway is connected yet.)'
+            : '(ডেমো: এখানে শুধু প্রতিশ্রুতি রেকর্ড হচ্ছে — এখনো কোনো পেমেন্ট গেটওয়ে যুক্ত নেই।)' %>
+        </p>
+      </div>
+    <% }) %>
+
+    <% if (myPledges.length) { %>
+      <h2 style="margin-top:36px;"><%= lang==='en' ? 'Your pledges' : 'তোমার প্রতিশ্রুতিগুলো' %></h2>
+      <div class="card">
+        <table>
+          <thead><tr><th><%= lang==='en' ? 'Project' : 'প্রজেক্ট' %></th><th><%= t('amount') %></th><th><%= lang==='en' ? 'Status' : 'অবস্থা' %></th></tr></thead>
+          <tbody>
+          <% myPledges.forEach(function(pl) { %>
+            <tr><td><%= pl.title %></td><td>৳<%= pl.amount %></td><td><%= pl.status %></td></tr>
+          <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>

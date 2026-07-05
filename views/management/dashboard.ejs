@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head><%- include('../partials/head', { title: t('management_overview') }) %></head>
+<body>
+  <%- include('../partials/topbar') %>
+  <div class="container">
+    <div class="page-head">
+      <div class="eyebrow"><%= t('management_user') %></div>
+      <h1><%= t('management_overview') %></h1>
+    </div>
+
+    <%- include('../partials/flash') %>
+
+    <div class="stat-grid">
+      <div class="stat-box"><div class="num"><%= stats.totalStudents %></div><div class="label"><%= t('total_students') %></div></div>
+      <div class="stat-box"><div class="num"><%= stats.totalTeachers %></div><div class="label"><%= t('total_teachers') %></div></div>
+      <div class="stat-box"><div class="num"><%= stats.totalDonors %></div><div class="label"><%= t('total_donors') %></div></div>
+      <div class="stat-box"><div class="num"><%= stats.totalProjects %></div><div class="label"><%= t('total_projects') %></div></div>
+      <div class="stat-box"><div class="num"><%= stats.pendingProjects %></div><div class="label"><%= lang==='en' ? 'Pending review' : 'রিভিউ বাকি' %></div></div>
+      <div class="stat-box"><div class="num">৳<%= stats.totalPledged %></div><div class="label"><%= lang==='en' ? 'Total pledged' : 'মোট প্রতিশ্রুতি' %></div></div>
+    </div>
+
+    <h2 style="margin-top:36px;"><%= lang==='en' ? 'Live Uploaded Media & Files' : 'লাইভ আপলোড করা মিডিয়া ও ফাইলসমূহ' %> (<%= uploadedFiles.length %>)</h2>
+    <div class="card">
+      <% if (uploadedFiles.length === 0) { %>
+        <p><%= lang==='en' ? 'No files uploaded yet by testers.' : 'এখনো কোনো ফাইল আপলোড করা হয়নি।' %></p>
+      <% } else { %>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th><%= lang==='en' ? 'File Name' : 'ফাইলের নাম' %></th>
+              <th><%= lang==='en' ? 'Action' : 'অ্যাকশন' %></th>
+            </tr>
+          </thead>
+          <tbody>
+          <% uploadedFiles.forEach(function(file, index) { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td style="word-break: break-all; font-family: monospace;"><%= file %></td>
+              <td>
+                <a href="/uploads/<%= file %>" target="_blank" class="btn btn-sm btn-primary">
+                  <%= lang==='en' ? 'View/Download' : 'দেখুন / ডাউনলোড' %>
+                </a>
+              </td>
+            </tr>
+          <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+
+    <h2 style="margin-top:36px;"><%= lang==='en' ? 'Teachers/Mentors awaiting verification' : 'ভেরিফিকেশনের অপেক্ষায় থাকা শিক্ষক/মেন্টর' %> (<%= pendingTeachers.length %>)</h2>
+    <div class="card">
+      <% if (pendingTeachers.length === 0) { %>
+        <p><%= lang==='en' ? 'Nothing pending.' : 'কিছু বাকি নেই।' %></p>
+      <% } else { %>
+        <table>
+          <thead><tr><th><%= lang==='en' ? 'Name' : 'নাম' %></th><th><%= lang==='en' ? 'Phone / Email' : 'ফোন / ইমেইল' %></th><th><%= lang==='en' ? 'Working place' : 'কর্মস্থল' %></th><th></th></tr></thead>
+          <tbody>
+          <% pendingTeachers.forEach(function(tc) { %>
+            <tr>
+              <td><%= tc.full_name %> <span class="pill-status pill-<%= tc.is_teacher_or_mentor %>"><%= tc.is_teacher_or_mentor %></span></td>
+              <td><%= tc.phone %> / <%= tc.email %></td>
+              <td><%= tc.working_place || '—' %></td>
+              <td><form action="/management/teachers/<%= tc.user_id %>/verify" method="POST"><button class="btn btn-sm btn-primary"><%= t('verify_account') %></button></form></td>
+            </tr>
+          <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+
+    <h2 style="margin-top:36px;"><%= lang==='en' ? 'Donors/Investors awaiting verification' : 'ভেরিফিকেশনের অপেক্ষায় থাকা ডোনার/ইনভেস্টর' %> (<%= pendingDonors.length %>)</h2>
+    <div class="card">
+      <% if (pendingDonors.length === 0) { %>
+        <p><%= lang==='en' ? 'Nothing pending.' : 'কিছু বাকি নেই।' %></p>
+      <% } else { %>
+        <table>
+          <thead><tr><th><%= lang==='en' ? 'Account name' : 'অ্যাকাউন্ট নাম' %></th><th><%= lang==='en' ? 'Legal name' : 'আইডি নাম' %></th><th><%= lang==='en' ? 'Type' : 'ধরন' %></th><th></th></tr></thead>
+          <tbody>
+          <% pendingDonors.forEach(function(dn) { %>
+            <tr>
+              <td><%= dn.account_name %></td>
+              <td><%= dn.full_name %></td>
+              <td><%= dn.donor_type %></td>
+              <td><form action="/management/donors/<%= dn.user_id %>/verify" method="POST"><button class="btn btn-sm btn-primary"><%= t('verify_account') %></button></form></td>
+            </tr>
+          <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+
+    <h2 style="margin-top:36px;"><%= lang==='en' ? 'Recent projects' : 'সাম্প্রতিক প্রজেক্ট' %></h2>
+    <div class="card">
+      <table>
+        <thead><tr><th><%= lang==='en' ? 'Title' : 'শিরোনাম' %></th><th><%= lang==='en' ? 'Student' : 'স্টুডেন্ট' %></th><th><%= lang==='en' ? 'Status' : 'অবস্থা' %></th><th></th></tr></thead>
+        <tbody>
+        <% recentProjects.forEach(function(p) { %>
+          <tr>
+            <td><%= p.title %></td>
+            <td><%= p.first_name %> <%= p.last_name %></td>
+            <td><span class="pill-status pill-<%= p.status %>"><%= p.status %></span></td>
+            <td>
+              <% if (p.status === 'approved') { %>
+                <form action="/management/projects/<%= p.id %>/feature" method="POST">
+                  <button class="btn btn-sm btn-gold"><%= lang==='en' ? 'Feature (ongoing)' : 'হাইলাইট করুন' %></button>
+                </form>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 style="margin-top:36px;"><%= lang==='en' ? 'All users' : 'সব ইউজার (সর্বোচ্চ ১০০ জন)' %></h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>#</th><th><%= lang==='en' ? 'Username' : 'ইউজারনেম' %></th><th><%= lang==='en' ? 'Role' : 'ভূমিকা' %></th><th><%= lang==='en' ? 'Status' : 'অবস্থা' %></th><th></th></tr></thead>
+        <tbody>
+        <% allUsers.forEach(function(u) { %>
+          <tr>
+            <td><%= u.unique_number %></td>
+            <td><%= u.username %></td>
+            <td><%= u.role %></td>
+            <td><span class="pill-status pill-<%= u.status %>"><%= u.status %></span></td>
+            <td>
+              <% if (u.status !== 'suspended') { %>
+                <form action="/management/users/<%= u.id %>/suspend" method="POST"><button class="btn btn-sm btn-danger"><%= lang==='en' ? 'Suspend' : 'স্থগিত করুন' %></button></form>
+              <% } else { %>
+                <form action="/management/users/<%= u.id %>/activate" method="POST"><button class="btn btn-sm btn-primary"><%= lang==='en' ? 'Reactivate' : 'পুনরায় চালু করুন' %></button></form>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>

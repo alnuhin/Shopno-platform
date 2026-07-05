@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head><%- include('../partials/head', { title: t('new_project') }) %></head>
+<body>
+  <%- include('../partials/topbar') %>
+  <div class="container-narrow" style="padding-top:40px; padding-bottom:60px;">
+    <div class="card">
+      <h1><%= t('new_project') %></h1>
+      <%- include('../partials/flash') %>
+      <form action="/student/projects" method="POST" enctype="multipart/form-data">
+        <div class="field"><label><%= t('project_title') %> *</label><input type="text" name="title" required /></div>
+        <div class="field"><label><%= t('project_description') %> *</label><textarea name="description" required></textarea></div>
+        <div class="form-row">
+          <div class="field">
+            <label><%= lang==='en' ? 'Category' : 'ক্যাটাগরি' %></label>
+            <select name="category">
+              <option value="STEM">STEM</option>
+              <option value="ICT">ICT</option>
+              <option value="Idea"><%= lang==='en' ? 'Idea' : 'আইডিয়া' %></option>
+              <option value="Startup">Startup</option>
+              <option value="Art"><%= lang==='en' ? 'Art / Craft' : 'আর্ট / ক্রাফট' %></option>
+              <option value="Other"><%= lang==='en' ? 'Other' : 'অন্যান্য' %></option>
+            </select>
+          </div>
+          <div class="field"><label><%= lang==='en' ? 'Funding goal (BDT, optional)' : 'ফান্ডিং লক্ষ্য (টাকা, ঐচ্ছিক)' %></label><input type="number" name="funding_goal" min="0" /></div>
+        </div>
+        <div class="field"><label><%= t('team_members') %></label><textarea name="team_members" placeholder="<%= lang==='en' ? 'Name (Student ID), Name (Student ID)...' : 'নাম (আইডি), নাম (আইডি)...' %>"></textarea></div>
+        <div class="field"><label><%= t('upload_photo') %> / <%= t('upload_video') %></label><input type="file" name="media" accept="image/*,video/*" /></div>
+        <button type="submit" class="btn btn-primary btn-block"><%= t('submit') %></button>
+      </form>
+    </div>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>

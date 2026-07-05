@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head><%- include('../partials/head', { title: t('enter_otp') }) %></head>
+<body>
+  <%- include('../partials/topbar') %>
+  <div class="container-narrow" style="padding-top:60px; padding-bottom:60px;">
+    <div class="card" style="text-align:center;">
+      <h1><%= t('otp_sent') %></h1>
+      <p style="color:var(--ink-soft)">
+        <%= lang==='en' ? 'For account verification we sent a 6-digit code to' : 'অ্যাকাউন্ট ভেরিফাই করার জন্য একটি ৬-সংখ্যার কোড পাঠানো হয়েছে' %>
+        <b><%= pending.destination || '—' %></b>
+      </p>
+
+      <div class="otp-demo-box">
+        ⚠️ <%= lang==='en'
+          ? 'DEMO MODE: no real SMS gateway is connected yet, so here is your code directly:'
+          : 'ডেমো মোড: এখনো কোনো রিয়েল SMS গেটওয়ে যুক্ত নেই, তাই কোডটি এখানে সরাসরি দেখানো হচ্ছে:' %>
+        <div class="otp-demo-code"><%= pending.otp %></div>
+      </div>
+
+      <%- include('../partials/flash') %>
+      <form action="/signup/verify-otp" method="POST">
+        <div class="field">
+          <input class="otp-input" type="text" name="code" maxlength="6" pattern="\d{6}" required autofocus />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block"><%= t('verify') %></button>
+      </form>
+    </div>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head><%- include('../partials/head', { title: project.title }) %></head>
+<body>
+  <%- include('../partials/topbar') %>
+  <div class="container-narrow" style="padding-top:40px; padding-bottom:60px;">
+    <div class="card">
+      <div class="split-header">
+        <h1><%= project.title %></h1>
+        <span class="pill-status pill-<%= project.status %>"><%= t(project.status) %></span>
+      </div>
+      <p style="color:var(--ink-soft)"><%= project.description %></p>
+
+      <% if (project.media_path) { %>
+        <div class="project-media">
+          <% if (project.media_type === 'video') { %>
+            <video src="<%= project.media_path %>" controls></video>
+          <% } else { %>
+            <img src="<%= project.media_path %>" alt="<%= project.title %>" />
+          <% } %>
+        </div>
+      <% } %>
+
+      <div class="stat-grid" style="margin-top:20px;">
+        <div class="stat-box"><div class="num">❤️ <%= likeCount %></div><div class="label"><%= t('like') %></div></div>
+        <div class="stat-box"><div class="num">৳<%= pledgeTotal %></div><div class="label"><%= lang==='en' ? 'Pledged so far' : 'মোট প্রতিশ্রুতি' %></div></div>
+        <div class="stat-box"><div class="num"><%= project.funding_goal || 0 %></div><div class="label"><%= lang==='en' ? 'Goal (BDT)' : 'লক্ষ্য (টাকা)' %></div></div>
+      </div>
+
+      <h3><%= t('comment') %></h3>
+      <div class="comment-list">
+        <% if (comments.length === 0) { %>
+          <p style="color:var(--ink-soft)"><%= lang==='en' ? 'No comments yet.' : 'এখনো কোনো কমেন্ট নেই।' %></p>
+        <% } %>
+        <% comments.forEach(function(c) { %>
+          <div class="comment-item"><b><%= c.username %>:</b> <%= c.body %></div>
+        <% }) %>
+      </div>
+
+      <a href="/student/dashboard" class="btn btn-outline" style="margin-top:20px;">← <%= t('back') %></a>
+    </div>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>

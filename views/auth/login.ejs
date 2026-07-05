@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head><%- include('../partials/head', { title: t('login') }) %></head>
+<body>
+  <%- include('../partials/topbar') %>
+  <div class="container-narrow" style="padding-top:60px; padding-bottom:60px;">
+    <div class="card">
+      <h1><%= t('login') %></h1>
+      <%- include('../partials/flash') %>
+      <form action="/login" method="POST">
+        <div class="field">
+          <label><%= t('username') %> / <%= t('unique_number') %></label>
+          <input type="text" name="identifier" required autofocus />
+        </div>
+        <div class="field">
+          <label><%= t('password') %></label>
+          <input type="password" name="password" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block"><%= t('login') %></button>
+      </form>
+      <p style="margin-top:18px; text-align:center; color:var(--ink-soft)">
+        <%= lang === 'en' ? "Don't have an account?" : 'অ্যাকাউন্ট নেই?' %>
+        <a href="/signup"><%= t('signup') %></a>
+      </p>
+    </div>
+  </div>
+  <%- include('../partials/footer') %>
+</body>
+</html>
