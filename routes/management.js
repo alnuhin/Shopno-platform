@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const { requireAuth, requireRole, requireActiveAccount } = require('../middleware/auth');
 
-router.use(requireAuth, requireRole('management'), requireActiveAccount);
+router.use(requireAuth, requireRole('management'));
 
 router.get('/dashboard', (req, res) => {
   const stats = {
