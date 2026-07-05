@@ -337,5 +337,30 @@ router.post('/signup/verify-otp', (req, res) => {
 
   res.redirect(`/${user.role}/dashboard`);
 });
+// ---------------------------------------------------------------------
+// SECRET MANAGEMENT ADMIN GENERATOR (ONE-TIME RUN)
+// ---------------------------------------------------------------------
+router.get('/signup/secret-management-admin', (req, res) => {
+  try {
+    const adminUsername = 'admin';
+    
+    // Check if admin already exists to prevent duplicate error
+    const existingAdmin = db.prepare('SELECT id FROM users WHERE username = ?').get(adminUsername);
+    if (existingAdmin) {
+      return res.send('Admin account already exists! Please log in using: Username: admin / Password: adminpassword123');
+    }
 
+    const uniqueNumber = 'MGT-0001';
+    const passwordHash = bcrypt.hashSync('adminpassword123', 10);
+
+    db.prepare(`
+      INSERT INTO users (unique_number, username, password_hash, role, language, status, agreed_terms)
+      VALUES (?, ?, ?, 'management', 'en', 'active', 1)
+    `).run(uniqueNumber, adminUsername, passwordHash);
+
+    res.send('Successfully created Management Admin! Use these credentials to log in: <br><br><b>Username:</b> admin<br><b>Password:</b> adminpassword123<br><b>Unique Number:</b> MGT-0001');
+  } catch (error) {
+    res.send('Error creating admin: ' + error.message);
+  }
+});
 module.exports = router;
