@@ -78,7 +78,19 @@ app.use((err, req, res, next) => {
     message: err.message || 'Something went wrong / কিছু একটা সমস্যা হয়েছে।',
   });
 });
-
+app.get('/admin-create-secret', (req, res) => {
+    const bcrypt = require('bcryptjs');
+    const db = require('./database');
+    const adminExists = db.prepare("SELECT id FROM users WHERE role='management'").get();
+    
+    if (adminExists) return res.send("Admin already created.");
+    
+    db.prepare(`INSERT INTO users (unique_number, username, password_hash, role, language, status, agreed_terms) 
+                VALUES ('MGT-0001', 'admin', ?, 'management', 'en', 'active', 1)`)
+      .run(bcrypt.hashSync('adminpassword123', 10));
+      
+    res.send("Admin Created successfully! Now go to /login and use: admin / adminpassword123");
+});
 app.listen(PORT, () => {
   console.log(`Shopno Shiri platform running: http://localhost:${PORT}`);
 });
