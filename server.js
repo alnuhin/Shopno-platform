@@ -7,6 +7,12 @@ const SQLiteStore = require('connect-sqlite3')(session);
 
 const { attachLocals } = require('./middleware/auth');
 const { t } = require('./utils/i18n');
+const { ensureAdminAccount } = require('./utils/ensureAdmin');
+
+// Create the Management (admin) account automatically if none exists yet.
+// This runs on EVERY boot (safe/idempotent) so hosts without shell access
+// (Render, Railway, etc.) never end up with zero admin accounts.
+ensureAdminAccount();
 
 const authRoutes = require('./routes/auth');
 const studentRoutes = require('./routes/student');
@@ -30,9 +36,9 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24 * 7, 
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     httpOnly: true,
-    secure: false
+    secure: process.env.NODE_ENV === 'production',
   },
 }));
 
@@ -78,19 +84,7 @@ app.use((err, req, res, next) => {
     message: err.message || 'Something went wrong / কিছু একটা সমস্যা হয়েছে।',
   });
 });
-app.get('/admin-create-secret', (req, res) => {
-    const bcrypt = require('bcryptjs');
-    const db = require('./database');
-    const adminExists = db.prepare("SELECT id FROM users WHERE role='management'").get();
-    
-    if (adminExists) return res.send("Admin already created.");
-    
-    db.prepare(`INSERT INTO users (unique_number, username, password_hash, role, language, status, agreed_terms) 
-                VALUES ('MGT-0001', 'admin', ?, 'management', 'en', 'active', 1)`)
-      .run(bcrypt.hashSync('adminpassword123', 10));
-      
-    res.send("Admin Created successfully! Now go to /login and use: admin / adminpassword123");
-});
+
 app.listen(PORT, () => {
   console.log(`Shopno Shiri platform running: http://localhost:${PORT}`);
 });

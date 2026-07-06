@@ -72,6 +72,73 @@ so nothing surprises you in front of judges:
 
 ---
 
+## 3.5 Deploying on Render — what broke and how it's fixed now
+
+If you deployed this to Render (or Railway, Fly.io, Heroku, etc.) and found
+**no Management/admin account existed** and you couldn't browse the
+database file, here's exactly why, and what changed:
+
+**Root cause #1 — the admin account was never created.**
+Render only ever runs your Start Command (`npm start`). It never runs
+`npm run seed` for you, and free-tier Render gives you no shell/SSH access
+to run it yourself. So the Management account genuinely never got created —
+this wasn't something you did wrong.
+
+**Fix:** `server.js` now calls `ensureAdminAccount()` (in
+`utils/ensureAdmin.js`) automatically every time the app boots. It checks
+"does a management user already exist?" — if not, it creates exactly one
+using `ADMIN_USERNAME`/`ADMIN_PASSWORD` from environment variables. This
+means you never need shell access or a manual seed step again.
+
+**⚠️ You must set environment variables in Render's dashboard**, not in a
+`.env` file. `.env` is for your own computer only — it's git-ignored and
+never gets uploaded to Render. On Render: go to your service → **Environment**
+tab → add:
+- `ADMIN_USERNAME` = (pick a username)
+- `ADMIN_PASSWORD` = (pick a strong password)
+- `SESSION_SECRET` = (a long random string)
+- `NODE_ENV` = `production`
+
+Then trigger a redeploy (or it'll pick these up on the next natural restart).
+
+**Root cause #2 — Render's free tier has no persistent disk.**
+This is the bigger one: without a paid "Persistent Disk" add-on, Render
+wipes your service's entire local filesystem — including `data/shopno.db`
+and every uploaded photo/video — on every redeploy, crash, **and every time
+the free service spins down from inactivity and spins back up.** This is
+almost certainly why your 2 students + 1 teacher signups seemed to
+disappear or become unreachable: the container restarted and reset.
+
+**Your options, ranked by what fits a 2-day demo right now:**
+
+1. **Fastest & safest for tomorrow: go back to running it on your own laptop
+   with ngrok** (as covered earlier). Your laptop's disk is never wiped —
+   this guarantees no data loss during your actual presentation. This is
+   what I'd personally do given the time pressure.
+2. **Keep the Render link, but add a Persistent Disk.** Render's cheapest
+   plan with disk support is "Starter" (paid, but small — check Render's
+   current pricing). In the dashboard: Add-ons → Disks → attach a disk,
+   mount it at e.g. `/data`, then set an environment variable so
+   `database.js` writes there instead of the ephemeral local folder. Ask me
+   and I'll wire up the `DATA_DIR` env var support for this in five minutes
+   if you go this route.
+3. **Zero-cost, permanent, more work: migrate the database to a hosted
+   SQLite-compatible service like Turso** (has a genuinely free tier that
+   isn't tied to Render's ephemeral disk). This needs the `better-sqlite3`
+   calls converted to the async Turso client throughout every route file —
+   a real but doable rewrite. Tell me if you want this and I'll do it
+   properly once your immediate deadline has passed — not something to risk
+   changing hours before a presentation.
+
+**New admin visibility tools (work regardless of which option you pick):**
+- `/management/uploads` — every photo/video anyone has uploaded, in one
+  gallery, organized by role. No file-system access needed.
+- `/management/backup` — downloads the live `shopno.db` file straight from
+  your browser, so you can open it in "DB Browser for SQLite" locally even
+  when you have no shell access to the server.
+
+---
+
 ## 4. Your database question — how to store data for a 10–15 person test
 
 You asked how to store the data so it can smoothly support ~10-15 test users
